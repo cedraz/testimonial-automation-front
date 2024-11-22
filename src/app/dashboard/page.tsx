@@ -1,7 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { File, PlusCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { ProductsTable } from './products-table';
+import { ProductsTable } from '../../components/dashboard/products-table';
 
 export default async function ProductsPage({
   searchParams
@@ -14,7 +14,7 @@ export default async function ProductsPage({
     products: [],
     newOffset: 0,
     totalProducts: 0
-  }
+  };
 
   return (
     <Tabs defaultValue="all">

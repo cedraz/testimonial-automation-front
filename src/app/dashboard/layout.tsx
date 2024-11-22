@@ -3,7 +3,6 @@ import {
   Home,
   LineChart,
   Package,
-  Package2,
   PanelLeft,
   Settings,
   ShoppingCart,
@@ -25,16 +24,26 @@ import {
   TooltipContent,
   TooltipTrigger
 } from '@/components/ui/tooltip';
-import { User } from './user';
-import Providers from './providers';
-import { NavItem } from './nav-item';
-import { SearchInput } from './search';
+// import { User } from './user';
+import Providers from '../../components/dashboard/providers';
+import { NavItem } from '../../components/dashboard/nav-item';
+import { SearchInput } from '../../components/dashboard/search';
+import { auth } from '@/utils/auth';
+// import { redirect } from 'next/navigation';
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children
 }: {
   children: React.ReactNode;
 }) {
+  const session = await auth();
+
+  console.log(session);
+
+  // if (!session) {
+  //   redirect('/login')
+  // }
+
   return (
     <Providers>
       <main className="flex min-h-screen w-full flex-col bg-muted/40">
@@ -44,7 +53,7 @@ export default function DashboardLayout({
             <MobileNav />
             <DashboardBreadcrumb />
             <SearchInput />
-            <User />
+            {/* <User jwt={session.access_token} /> */}
           </header>
           <main className="grid flex-1 items-start gap-2 p-4 sm:px-6 sm:py-0 md:gap-4 bg-muted/40">
             {children}
@@ -66,23 +75,23 @@ function DesktopNav() {
           <span className="sr-only">Acme Inc</span>
         </Link>
 
-        <NavItem href="#" label="Dashboard">
+        <NavItem href="/dashboard" label="Dashboard">
           <Home className="h-5 w-5" />
         </NavItem>
 
-        <NavItem href="#" label="Orders">
+        <NavItem href="/dashboard" label="Orders">
           <ShoppingCart className="h-5 w-5" />
         </NavItem>
 
-        <NavItem href="/" label="Products">
+        <NavItem href="/dashboard" label="Products">
           <Package className="h-5 w-5" />
         </NavItem>
 
-        <NavItem href="/customers" label="Customers">
+        <NavItem href="/dashboard/customers" label="Customers">
           <Users2 className="h-5 w-5" />
         </NavItem>
 
-        <NavItem href="#" label="Analytics">
+        <NavItem href="/dashboard" label="Analytics">
           <LineChart className="h-5 w-5" />
         </NavItem>
       </nav>
@@ -117,13 +126,6 @@ function MobileNav() {
         <nav className="grid gap-6 text-lg font-medium">
           <Link
             href="#"
-            className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
-          >
-            <Package2 className="h-5 w-5 transition-all group-hover:scale-110" />
-            <span className="sr-only">Vercel</span>
-          </Link>
-          <Link
-            href="#"
             className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
           >
             <Home className="h-5 w-5" />
@@ -141,7 +143,7 @@ function MobileNav() {
             className="flex items-center gap-4 px-2.5 text-foreground"
           >
             <Package className="h-5 w-5" />
-            Products
+            TEste
           </Link>
           <Link
             href="#"
