@@ -10,24 +10,24 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 
-const api_url = process.env.API_URL
-const origin_url = process.env.ORIGIN_URL
+const api_url = process.env.API_URL;
+const origin_url = process.env.ORIGIN_URL;
 
 type UserProps = {
   jwt: string;
-}
+};
 
-export async function User({jwt}: UserProps) {
+export async function User({ jwt }: UserProps) {
   const response = await fetch(`${api_url}/admin/profile`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${jwt}`,
-      'X-Forwarded-Host': origin_url ? origin_url : 'localhost:3000',
-    },
-  })
+      Authorization: `Bearer ${jwt}`,
+      'X-Forwarded-Host': origin_url ? origin_url : 'localhost:3000'
+    }
+  });
 
-  const admin = await response.json()
+  const admin = await response.json();
 
   return (
     <DropdownMenu>

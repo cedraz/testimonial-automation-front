@@ -1,23 +1,11 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { File, PlusCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { ProductsTable } from '../../components/dashboard/products-table';
+import { LandingPageList } from '@/components/dashboard/landing-pages/landing-pages-list';
 
-export default async function ProductsPage({
-  searchParams
-}: {
-  searchParams: { q: string; offset: string };
-}) {
-  const search = searchParams.q ?? '';
-  const offset = searchParams.offset ?? 0;
-  const { products, newOffset, totalProducts } = {
-    products: [],
-    newOffset: 0,
-    totalProducts: 0
-  };
-
+export default async function LandingPageListPage() {
   return (
-    <Tabs defaultValue="all">
+    <Tabs defaultValue="all" className="h-full flex flex-col">
       <div className="flex items-center">
         <TabsList>
           <TabsTrigger value="all">All</TabsTrigger>
@@ -42,12 +30,8 @@ export default async function ProductsPage({
           </Button>
         </div>
       </div>
-      <TabsContent value="all">
-        <ProductsTable
-          products={products}
-          offset={newOffset ?? 0}
-          totalProducts={totalProducts}
-        />
+      <TabsContent value="all" className="h-full">
+        <LandingPageList />
       </TabsContent>
     </Tabs>
   );
