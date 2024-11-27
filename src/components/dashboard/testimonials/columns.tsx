@@ -5,6 +5,21 @@ import { DataTableColumnHeader } from '../../data-tables/data-table-column-heade
 import { TTestimonial } from './schema';
 import { TestimonialRowActions } from '@/components/dashboard/testimonials/testimonial-row-actions';
 
+import { FilterFn } from '@tanstack/react-table';
+
+const filterNullValues: FilterFn<TTestimonial> = (
+  row,
+  columnId,
+  filterValue
+) => {
+  const rowValue = row.getValue(columnId);
+  return (
+    rowValue !== null &&
+    rowValue !== undefined &&
+    rowValue.toString().toLowerCase().includes(filterValue.toLowerCase())
+  );
+};
+
 export const columns: ColumnDef<TTestimonial>[] = [
   {
     accessorKey: 'id',
@@ -34,14 +49,8 @@ export const columns: ColumnDef<TTestimonial>[] = [
       <span className="max-w-[500px] truncate font-medium">
         {row.getValue('customer_name')}
       </span>
-    )
-  },
-  {
-    accessorKey: 'message',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Message" />
     ),
-    cell: ({ row }) => <span className="">{row.getValue('message')}</span>
+    filterFn: filterNullValues
   },
   {
     accessorKey: 'title',
@@ -53,6 +62,13 @@ export const columns: ColumnDef<TTestimonial>[] = [
         {row.getValue('title')}
       </span>
     )
+  },
+  {
+    accessorKey: 'message',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Message" />
+    ),
+    cell: ({ row }) => <span className="">{row.getValue('message')}</span>
   },
   {
     id: 'actions',

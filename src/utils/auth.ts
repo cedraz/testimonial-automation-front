@@ -27,10 +27,6 @@ export async function auth(): Promise<Auth | false> {
       return false;
     }
 
-    console.log({
-      data
-    });
-
     cookieStore.set({
       name: 'access_token',
       value: data.access_token,

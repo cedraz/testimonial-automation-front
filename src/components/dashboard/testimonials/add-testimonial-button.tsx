@@ -1,11 +1,11 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { useToast } from '@/hooks/use-toast';
 import { getAccessToken } from '@/utils/auth';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { PlusCircle } from 'lucide-react';
 import { addTestimonial } from './actions';
+import { toast as sooner } from 'sonner';
 export interface IAddTestimonialDialogProps {
   queryName: string;
   landing_page_id: string;
@@ -16,15 +16,13 @@ export function AddTestimonialButton({
   landing_page_id
 }: IAddTestimonialDialogProps) {
   const queryClient = useQueryClient();
-  const { toast } = useToast();
 
   const addTestimonialMutation = useMutation({
     onSuccess: () => {
       // Invalidate the query and refetch the data
       queryClient.invalidateQueries({ queryKey: [queryName] });
-      toast({
-        title: 'Success',
-        description: 'Testimonial added successfully'
+      sooner('Success', {
+        description: 'Testimonial added successfully.'
       });
     },
     mutationFn: async () => {
@@ -35,10 +33,8 @@ export function AddTestimonialButton({
       });
     },
     onError: () => {
-      toast({
-        title: 'Error',
-        description: 'Failed to add testimonial',
-        variant: 'destructive'
+      sooner('Error', {
+        description: 'Failed to add testimonial.'
       });
     }
   });

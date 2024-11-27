@@ -5,7 +5,7 @@ export function formDataBuilder(data: Record<string, any>) {
   for (const key in data) {
     if (data[key] instanceof File) {
       formData.append(key, data[key]);
-    } else {
+    } else if (data[key] !== undefined && data[key] !== null) {
       formData.append(key, data[key].toString());
     }
   }

@@ -50,10 +50,6 @@ export function TestimonialForm({ testimonial_id }: ITestimonialFormProps) {
   const handleSubmit = async (data: z.infer<typeof testimonialFormSchema>) => {
     const formData = formDataBuilder(data);
 
-    if (data.image) {
-      formData.append('image', data.image);
-    }
-
     await completeTestimonial({
       testimonial_id,
       formData

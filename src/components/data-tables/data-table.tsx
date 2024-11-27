@@ -38,6 +38,7 @@ interface DataTableProps<TData, TValue> {
   rowOnClick?: (row: TData) => void;
   columnName: string;
   children?: React.ReactNode;
+  manualSorting?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -50,7 +51,8 @@ export function DataTable<TData, TValue>({
   total,
   rowOnClick,
   columnName,
-  children
+  children,
+  manualSorting
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
@@ -76,6 +78,7 @@ export function DataTable<TData, TValue>({
         pageSize: limit
       }
     },
+    manualSorting,
     pageCount: Math.ceil(total / limit),
     onPaginationChange: (updater) => {
       const { pageIndex, pageSize } =
