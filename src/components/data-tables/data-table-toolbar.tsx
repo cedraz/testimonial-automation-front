@@ -20,8 +20,8 @@ export function DataTableToolbar<TData>({
   const isFiltered = table.getState().columnFilters.length > 0;
 
   return (
-    <div className="flex items-center justify-between">
-      <div className="flex flex-1 items-center space-x-2">
+    <div className="flex flex-col xs:flex-row justify-between gap-4">
+      <div className="flex flex-1 items-end space-x-2">
         <Input
           placeholder="Filter tasks..."
           value={
@@ -30,7 +30,7 @@ export function DataTableToolbar<TData>({
           onChange={(event) =>
             table.getColumn(columnName)?.setFilterValue(event.target.value)
           }
-          className="h-8 w-[150px] lg:w-[250px]"
+          className="h-8 w-full max-w-[250px] "
         />
         {isFiltered && (
           <Button
@@ -43,7 +43,7 @@ export function DataTableToolbar<TData>({
           </Button>
         )}
       </div>
-      <div className="flex gap-3">
+      <div className="flex justify-between gap-2">
         <DataTableViewOptions table={table} />
         {children}
       </div>

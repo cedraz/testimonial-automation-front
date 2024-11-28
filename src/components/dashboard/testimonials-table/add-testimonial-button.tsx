@@ -44,8 +44,8 @@ export function AddTestimonialButton({
       className="h-8 flex gap-1"
       onClick={() => addTestimonialMutation.mutate()}
     >
-      <PlusCircle size={16} />
-      Add Testimonial
+      <PlusCircle />
+      <span className="hidden sm:flex">Add Testimonial</span>
     </Button>
   );
 }

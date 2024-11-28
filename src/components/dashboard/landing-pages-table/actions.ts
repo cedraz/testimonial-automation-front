@@ -1,6 +1,6 @@
 'use server';
 
-import { TLandingPage } from '@/components/dashboard/landing-pages/schema';
+import { TLandingPage } from '@/components/dashboard/landing-pages-table/schema';
 import { refresh } from '@/utils/auth';
 import { IPaginationResponse } from '@/utils/types';
 

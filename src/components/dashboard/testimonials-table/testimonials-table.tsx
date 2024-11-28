@@ -8,8 +8,16 @@ import { useQuery } from '@tanstack/react-query';
 import { getAccessToken } from '@/utils/auth';
 import { getTestimonials } from './actions';
 import { AddTestimonialButton } from './add-testimonial-button';
+import { Skeleton } from '@/components/ui/skeleton';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle
+} from '@/components/ui/card';
 
-export function TestimonialsList({
+export function TestimonialsTable({
   landing_page_id
 }: {
   landing_page_id: string;
@@ -35,7 +43,15 @@ export function TestimonialsList({
   });
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center space-x-4">
+        <Skeleton className="h-12 w-12 rounded-full" />
+        <div className="space-y-2">
+          <Skeleton className="h-4 w-[250px]" />
+          <Skeleton className="h-4 w-[200px]" />
+        </div>
+      </div>
+    );
   }
 
   if (error) {
@@ -47,20 +63,28 @@ export function TestimonialsList({
   }
 
   return (
-    <DataTable
-      columns={columns}
-      data={data?.results || []}
-      init={init}
-      limit={limit}
-      setInit={setInit}
-      setLimit={setLimit}
-      total={data?.total || 0}
-      columnName="customer_name"
-    >
-      <AddTestimonialButton
-        landing_page_id={landing_page_id}
-        queryName="testimonials"
-      />
-    </DataTable>
+    <Card>
+      <CardHeader>
+        <CardTitle>Testimonials</CardTitle>
+        <CardDescription>Manage your testimonials.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <DataTable
+          columns={columns}
+          data={data?.results || []}
+          init={init}
+          limit={limit}
+          setInit={setInit}
+          setLimit={setLimit}
+          total={data?.total || 0}
+          columnName="customer_name"
+        >
+          <AddTestimonialButton
+            landing_page_id={landing_page_id}
+            queryName="testimonials"
+          />
+        </DataTable>
+      </CardContent>
+    </Card>
   );
 }

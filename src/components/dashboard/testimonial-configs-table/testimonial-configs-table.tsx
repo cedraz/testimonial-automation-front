@@ -1,37 +1,35 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
-import { useToast } from '@/hooks/use-toast';
-import { getLandingPages } from '@/components/dashboard/landing-pages/actions';
 import { DataTable } from '@/components/data-tables/data-table';
-import { columns } from './columns';
-import { useState } from 'react';
-import { TLandingPage } from './schema';
-import { useRouter } from 'next/navigation';
 import {
   Card,
-  CardHeader,
-  CardTitle,
+  CardContent,
   CardDescription,
-  CardContent
+  CardHeader,
+  CardTitle
 } from '@/components/ui/card';
+import { useState } from 'react';
+import { columns } from './columns';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useQuery } from '@tanstack/react-query';
+import { useToast } from '@/hooks/use-toast';
 import { getAccessToken } from '@/utils/auth';
+import { getTestimonialConfigs } from './actions';
 
-export function LandingPageList() {
-  const router = useRouter();
+export function TestimonialConfigsTable() {
   const { toast } = useToast();
   const [init, setInit] = useState(0);
   const [limit, setLimit] = useState(10);
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ['landingPages'],
+    queryKey: ['testimonials-configs'],
     queryFn: async () => {
       const access_token = await getAccessToken();
 
-      const response = await getLandingPages({
+      const response = await getTestimonialConfigs({
         access_token: access_token || '',
         init: init * limit,
-        limit
+        limit: limit
       });
 
       return response;
@@ -39,28 +37,30 @@ export function LandingPageList() {
   });
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center space-x-4">
+        <Skeleton className="h-12 w-12 rounded-full" />
+        <div className="space-y-2">
+          <Skeleton className="h-4 w-[250px]" />
+          <Skeleton className="h-4 w-[200px]" />
+        </div>
+      </div>
+    );
   }
 
   if (error) {
     toast({
       title: 'Error',
-      description: 'Failed to fetch landing pages.'
+      description: 'Failed to fetch testimonials.'
     });
     return <div>Error loading data</div>;
   }
 
-  const handleOpenLandingPage = (row: TLandingPage) => {
-    router.push(`/dashboard/landing-page/${row.id}`);
-  };
-
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Products</CardTitle>
-        <CardDescription>
-          Manage your products and view their sales performance.
-        </CardDescription>
+        <CardTitle>Testimonial Configs</CardTitle>
+        <CardDescription>Manage your testimonial configs.</CardDescription>
       </CardHeader>
       <CardContent>
         <DataTable
@@ -71,9 +71,8 @@ export function LandingPageList() {
           setInit={setInit}
           setLimit={setLimit}
           total={data?.total || 0}
-          rowOnClick={handleOpenLandingPage}
-          columnName="name"
-        />
+          columnName="format"
+        ></DataTable>
       </CardContent>
     </Card>
   );

@@ -1,3 +1,5 @@
+import { TTestimonialConfig } from '../testimonial-configs-table/schemas';
+
 export type TLandingPage = {
   id: string;
   name: string;
@@ -6,4 +8,5 @@ export type TLandingPage = {
   updated_at: Date;
   admin_id: string;
   testimonial_config_id: string;
+  testimonial_config: TTestimonialConfig;
 };
