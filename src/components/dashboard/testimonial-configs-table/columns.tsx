@@ -16,6 +16,17 @@ export const columns: ColumnDef<TTestimonialConfig>[] = [
     enableHiding: true
   },
   {
+    accessorKey: 'name',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Name" />
+    ),
+    cell: ({ row }) => (
+      <span className="max-w-[500px] truncate font-medium">
+        {row.getValue('name')}
+      </span>
+    )
+  },
+  {
     accessorKey: 'format',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Format" />

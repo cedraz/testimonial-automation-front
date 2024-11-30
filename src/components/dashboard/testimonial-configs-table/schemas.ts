@@ -1,5 +1,6 @@
 export type TTestimonialConfig = {
   id: string;
+  name: string;
   format: TestimonialFormat;
   title_char_limit: number;
   message_char_limit: number;

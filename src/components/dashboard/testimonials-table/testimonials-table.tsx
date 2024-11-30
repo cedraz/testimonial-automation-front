@@ -5,8 +5,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
 import { columns } from './columns';
 import { useQuery } from '@tanstack/react-query';
-import { getAccessToken } from '@/utils/auth';
-import { getTestimonials } from './actions';
+import { getAccessToken } from '@/services/auth';
 import { AddTestimonialButton } from './add-testimonial-button';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
@@ -16,6 +15,7 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card';
+import { deleteTestimonials, getTestimonials } from '@/services/testimonial';
 
 export function TestimonialsTable({
   landing_page_id
@@ -41,6 +41,15 @@ export function TestimonialsTable({
       return response;
     }
   });
+
+  const deleteMutation = async (id_list: Array<string>) => {
+    const access_token = await getAccessToken();
+
+    await deleteTestimonials({
+      access_token: access_token || '',
+      testimonials_id_list: id_list
+    });
+  };
 
   if (isLoading) {
     return (
@@ -78,6 +87,8 @@ export function TestimonialsTable({
           setLimit={setLimit}
           total={data?.total || 0}
           columnName="customer_name"
+          queryName="testimonials"
+          deleteFn={deleteMutation}
         >
           <AddTestimonialButton
             landing_page_id={landing_page_id}

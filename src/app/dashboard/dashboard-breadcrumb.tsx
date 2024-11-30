@@ -23,16 +23,28 @@ export function DashboardBreadcrumb() {
           </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
-        <BreadcrumbItem>
-          <BreadcrumbLink asChild>
-            <Link href="/dashboard">Landing pages</Link>
-          </BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
+        {pathname === '/dashboard' && (
+          <>
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link href="/dashboard">Landing pages</Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+          </>
+        )}
         {pathname.startsWith('/dashboard/landing-page/') && (
           <BreadcrumbItem>
             <BreadcrumbPage>Testimonials</BreadcrumbPage>
           </BreadcrumbItem>
+        )}
+        {pathname.startsWith('/dashboard/testimonial-configs') && (
+          <>
+            <BreadcrumbItem>
+              <BreadcrumbPage>Testimonials Configs</BreadcrumbPage>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+          </>
         )}
       </BreadcrumbList>
     </Breadcrumb>

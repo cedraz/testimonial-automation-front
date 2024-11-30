@@ -16,13 +16,13 @@ import {
   DropdownMenuTrigger
 } from '../../ui/dropdown-menu';
 import { toast as sooner } from 'sonner';
-import { deleteTestimonial, updateTestimonial } from './actions';
-import { getAccessToken } from '@/utils/auth';
+import { getAccessToken } from '@/services/auth';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { TestimonialStatus } from './schema';
 import { UpdateTestimonialDialog } from './update-testimonial-dialog';
 import { useState } from 'react';
 import { formDataBuilder } from '@/utils/form-data-constructor';
+import { deleteTestimonials, updateTestimonial } from '@/services/testimonial';
 interface ITestimonialRowActionsProps<TData> {
   row: Row<TData>;
 }
@@ -52,8 +52,8 @@ export function TestimonialRowActions<TData>({
     mutationFn: async () => {
       const testimonial_id: string = row.getValue('id');
       const access_token = await getAccessToken();
-      await deleteTestimonial({
-        testimonial_id,
+      await deleteTestimonials({
+        testimonials_id_list: [testimonial_id],
         access_token: access_token || ''
       });
     },
@@ -105,7 +105,6 @@ export function TestimonialRowActions<TData>({
             className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
           >
             <MoreHorizontal />
-            <span className="sr-only">Open menu</span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-[160px]">

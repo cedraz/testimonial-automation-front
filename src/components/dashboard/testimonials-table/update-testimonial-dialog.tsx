@@ -24,8 +24,8 @@ import { formDataBuilder } from '@/utils/form-data-constructor';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { updateTestimonial } from './actions';
-import { getAccessToken } from '@/utils/auth';
+import { getAccessToken } from '@/services/auth';
+import { updateTestimonial } from '@/services/testimonial';
 
 const isClient = typeof window !== 'undefined';
 

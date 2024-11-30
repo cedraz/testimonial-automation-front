@@ -26,6 +26,8 @@ import {
   TableRow
 } from '@/components/ui/table';
 import { DataTableToolbar } from './data-table-toolbar';
+import { DeleteTestimonialButton } from './data-table-delete-button';
+import { ChevronRight } from 'lucide-react';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -35,8 +37,10 @@ interface DataTableProps<TData, TValue> {
   setInit: (init: number) => void;
   setLimit: (limit: number) => void;
   total: number;
-  rowOnClick?: (row: TData) => void;
+  queryName: string;
   columnName: string;
+  deleteFn?: (id_list: Array<string>) => Promise<void>;
+  rowOnClick?: (row: TData) => void;
   children?: React.ReactNode;
   manualSorting?: boolean;
 }
@@ -50,7 +54,9 @@ export function DataTable<TData, TValue>({
   setLimit,
   total,
   rowOnClick,
+  queryName,
   columnName,
+  deleteFn,
   children,
   manualSorting
 }: DataTableProps<TData, TValue>) {
@@ -103,8 +109,19 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4 w-full">
-      <DataTableToolbar columnName={columnName} table={table}>
+      <DataTableToolbar
+        queryName={queryName}
+        columnName={columnName}
+        table={table}
+      >
         {children}
+        {deleteFn && table.getSelectedRowModel().rows.length > 0 && (
+          <DeleteTestimonialButton
+            queryName={queryName}
+            table={table}
+            deleteFn={deleteFn}
+          />
+        )}
       </DataTableToolbar>
       <div className="rounded-md border">
         <Table>
@@ -132,10 +149,6 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
-                  onClick={
-                    rowOnClick ? () => rowOnClick(row.original) : undefined
-                  }
-                  className={`${rowOnClick ? 'cursor-pointer' : ''}`}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -145,6 +158,18 @@ export function DataTable<TData, TValue>({
                       )}
                     </TableCell>
                   ))}
+                  {rowOnClick && (
+                    <TableCell className="w-[30px]">
+                      <ChevronRight
+                        className="cursor-pointer"
+                        onClick={
+                          rowOnClick
+                            ? () => rowOnClick(row.original)
+                            : undefined
+                        }
+                      />
+                    </TableCell>
+                  )}
                 </TableRow>
               ))
             ) : (

@@ -13,8 +13,9 @@ import { columns } from './columns';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useQuery } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
-import { getAccessToken } from '@/utils/auth';
-import { getTestimonialConfigs } from './actions';
+import { getAccessToken } from '@/services/auth';
+import { getTestimonialConfigs } from '@/services/testimonial-config';
+import { AddTestimonialConfigDialog } from './add-testimonial-config-dialog';
 
 export function TestimonialConfigsTable() {
   const { toast } = useToast();
@@ -71,8 +72,11 @@ export function TestimonialConfigsTable() {
           setInit={setInit}
           setLimit={setLimit}
           total={data?.total || 0}
-          columnName="format"
-        ></DataTable>
+          columnName="name"
+          queryName="testimonials-configs"
+        >
+          <AddTestimonialConfigDialog queryName="testimonials-configs" />
+        </DataTable>
       </CardContent>
     </Card>
   );

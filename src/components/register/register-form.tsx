@@ -24,7 +24,7 @@ import { z } from 'zod';
 import { FcGoogle } from 'react-icons/fc';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
-import { register } from '@/app/register/actions';
+import { register } from '@/services/auth';
 
 export const registerFormSchema = z.object({
   name: z.string().min(1),
@@ -32,6 +32,8 @@ export const registerFormSchema = z.object({
   password: z.string().min(1),
   company_name: z.string().min(1)
 });
+
+export type TRegisterFormSchema = z.infer<typeof registerFormSchema>;
 
 export default function RegisterForm() {
   const { toast } = useToast();

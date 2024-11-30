@@ -6,8 +6,8 @@ import { TTestimonial } from './schema';
 import { TestimonialRowActions } from '@/components/dashboard/testimonials-table/testimonial-row-actions';
 
 import { FilterFn } from '@tanstack/react-table';
-import { Button } from '@/components/ui/button';
 import Image from 'next/image';
+import { Checkbox } from '@/components/ui/checkbox';
 
 const filterNullValues: FilterFn<TTestimonial> = (
   row,
@@ -23,6 +23,30 @@ const filterNullValues: FilterFn<TTestimonial> = (
 };
 
 export const columns: ColumnDef<TTestimonial>[] = [
+  {
+    id: 'select',
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && 'indeterminate')
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+        className="translate-y-[2px]"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+        className="translate-y-[2px]"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false
+  },
   {
     accessorKey: 'id',
     header: ({ column }) => (
@@ -75,18 +99,12 @@ export const columns: ColumnDef<TTestimonial>[] = [
   {
     accessorKey: 'image',
     header: () => (
-      <Button
-        variant="ghost"
-        size="sm"
-        className="-ml-3 h-8 data-[state=open]:bg-accent"
-      >
-        <span>Image</span>
-      </Button>
+      <span className="h-8 data-[state=open]:bg-accent">Image</span>
     ),
     cell: ({ row }) => (
       <>
         {row.getValue('image') ? (
-          <div className="relative h-[50px] rounded-full">
+          <div className="relative w-[50px] h-[50px] rounded-full">
             <Image
               src={row.getValue('image')}
               alt="Testimonial Image"

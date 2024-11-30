@@ -1,6 +1,8 @@
 'use server';
 
 import { cookies } from 'next/headers';
+import { TLoginFormSchema } from '../app/login/page';
+import { TRegisterFormSchema } from '@/components/register/register-form';
 
 export type Auth = {
   access_token: string;
@@ -12,6 +14,69 @@ export type Auth = {
 const getHeaders = () => ({
   Cookie: cookies().toString()
 });
+
+const api_url = process.env.API_URL;
+const origin_url = process.env.ORIGIN_URL;
+
+export async function login(loginFormData: TLoginFormSchema) {
+  const cookieStore = cookies();
+
+  const response = await fetch(`${api_url}/auth/login`, {
+    method: 'POST',
+    body: JSON.stringify(loginFormData),
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Forwarded-Host': origin_url ? origin_url : 'localhost:3000'
+    }
+  });
+
+  const data = await response.json();
+
+  const accessTokenExpires = new Date(data.access_token_expires_in);
+  const refreshTokenExpires = new Date(data.refresh_token_expires_in);
+
+  if (!response.ok) {
+    return false;
+  }
+
+  cookieStore.set({
+    name: 'access_token',
+    value: data.access_token,
+    path: '/',
+    httpOnly: true,
+    secure: true,
+    expires: accessTokenExpires
+  });
+  cookieStore.set({
+    name: 'refresh_token',
+    value: data.refresh_token,
+    path: '/',
+    httpOnly: true,
+    secure: true,
+    expires: refreshTokenExpires
+  });
+
+  return data;
+}
+
+export async function register(formData: TRegisterFormSchema) {
+  const response = await fetch(`${api_url}/register`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Forwarded-Host': origin_url ? origin_url : 'localhost:3000'
+    },
+    body: JSON.stringify(formData)
+  });
+
+  if (!response.ok) {
+    return false;
+  }
+
+  const data = await response.json();
+
+  return data;
+}
 
 export async function auth(): Promise<Auth | false> {
   'use server';

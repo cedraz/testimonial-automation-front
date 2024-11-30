@@ -1,12 +1,12 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { getAccessToken } from '@/utils/auth';
+import { getAccessToken } from '@/services/auth';
+import { addTestimonial } from '@/services/testimonial';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { PlusCircle } from 'lucide-react';
-import { addTestimonial } from './actions';
 import { toast as sooner } from 'sonner';
-export interface IAddTestimonialDialogProps {
+export interface IAddTestimonialButtonProps {
   queryName: string;
   landing_page_id: string;
 }
@@ -14,12 +14,11 @@ export interface IAddTestimonialDialogProps {
 export function AddTestimonialButton({
   queryName,
   landing_page_id
-}: IAddTestimonialDialogProps) {
+}: IAddTestimonialButtonProps) {
   const queryClient = useQueryClient();
 
   const addTestimonialMutation = useMutation({
     onSuccess: () => {
-      // Invalidate the query and refetch the data
       queryClient.invalidateQueries({ queryKey: [queryName] });
       sooner('Success', {
         description: 'Testimonial added successfully.'
@@ -42,10 +41,11 @@ export function AddTestimonialButton({
   return (
     <Button
       className="h-8 flex gap-1"
+      variant="outline"
       onClick={() => addTestimonialMutation.mutate()}
     >
-      <PlusCircle />
-      <span className="hidden sm:flex">Add Testimonial</span>
+      <PlusCircle size={18} />
+      <span className="hidden md:flex">Add Testimonial</span>
     </Button>
   );
 }

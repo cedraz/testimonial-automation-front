@@ -1,7 +1,11 @@
 'use server';
 
+import {
+  TestimonialFormat,
+  TTestimonialConfig
+} from '@/components/dashboard/testimonial-configs-table/schemas';
 import { IPaginationResponse } from '@/utils/types';
-import { TTestimonialConfig } from './schemas';
+import { revalidateTag } from 'next/cache';
 
 const origin_url = process.env.ORIGIN_URL;
 const api_url = process.env.API_URL;
@@ -41,6 +45,66 @@ export async function getTestimonialConfigs({
   );
 
   const data: IPaginationResponse<TTestimonialConfig> = await response.json();
+
+  return data;
+}
+
+type TUpdateTestimonialConfig = {
+  access_token: string;
+  testimonial_config_id: string;
+  updateTestimonialConfigDto: Partial<TTestimonialConfig>;
+};
+
+export async function updateTestimonialConfig({
+  access_token,
+  testimonial_config_id,
+  updateTestimonialConfigDto
+}: TUpdateTestimonialConfig) {
+  const response = await fetch(
+    `${api_url}/testimonial-config/${testimonial_config_id}`,
+    {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Forwarded-Host': origin_url ? origin_url : 'http://localhost:3000',
+        Authorization: `Bearer ${access_token}`
+      },
+      body: JSON.stringify(updateTestimonialConfigDto)
+    }
+  );
+
+  const data: TTestimonialConfig = await response.json();
+
+  revalidateTag('landing-page');
+
+  return data;
+}
+
+type TAddTestimonialConfigDto = {
+  format: TestimonialFormat;
+  expiration_limit: number;
+  title_char_limit: number;
+  message_char_limit: number;
+};
+
+export async function addTestimonialConfig({
+  access_token,
+  addTestimonialConfigDto
+}: {
+  access_token: string;
+  addTestimonialConfigDto: TAddTestimonialConfigDto;
+}) {
+  const response = await fetch(`${api_url}/testimonial-config`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Forwarded-Host': origin_url ? origin_url : 'http://localhost:3000',
+      Authorization: `Bearer ${access_token}`
+    },
+    body: JSON.stringify(addTestimonialConfigDto)
+  });
+
+  const data = await response.json();
 
   return data;
 }

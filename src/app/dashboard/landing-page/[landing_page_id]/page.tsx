@@ -1,7 +1,7 @@
+import { getLandingPage } from '@/services/testimonial';
 import { TestimonialConfigTab } from '@/components/dashboard/testimonial-config-tab/testimonial-config-tab';
 import { TestimonialsTable } from '@/components/dashboard/testimonials-table/testimonials-table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { getLandingPage } from './actions';
 
 export default async function LandingPageData({
   params
@@ -17,22 +17,18 @@ export default async function LandingPageData({
       <div className="flex items-center overflow-auto">
         <TabsList>
           <TabsTrigger value="testimonials">Testimonials</TabsTrigger>
-          <TabsTrigger value="testimonial-configs">
-            Testimonial Configs
+          <TabsTrigger value="testimonial-config">
+            Testimonial Config
           </TabsTrigger>
-          <TabsTrigger value="metrics">Metrics</TabsTrigger>
         </TabsList>
       </div>
       <TabsContent value="testimonials" className="h-full">
         <TestimonialsTable landing_page_id={landing_page_id} />
       </TabsContent>
-      <TabsContent value="testimonial-configs" className="h-full">
+      <TabsContent value="testimonial-config" className="h-full">
         <TestimonialConfigTab
           testimonial_config={landing_page.testimonial_config}
         />
-      </TabsContent>
-      <TabsContent value="metrics" className="h-full">
-        <div>metrics</div>
       </TabsContent>
     </Tabs>
   );

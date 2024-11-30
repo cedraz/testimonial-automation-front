@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import {
+  FileCog,
   Home,
   LineChart,
   Package,
@@ -21,7 +22,7 @@ import { NavItem } from '../../components/dashboard/nav-item';
 import { SearchInput } from '../../components/dashboard/search';
 import { DashboardBreadcrumb } from './dashboard-breadcrumb';
 import { User } from '@/components/dashboard/user';
-import { getAccessToken } from '@/utils/auth';
+import { getAccessToken } from '@/services/auth';
 import { redirect } from 'next/navigation';
 
 export default async function DashboardLayout({
@@ -70,20 +71,15 @@ function DesktopNav() {
           <Home className="h-5 w-5" />
         </NavItem>
 
-        <NavItem href="/dashboard" label="Orders">
-          <ShoppingCart className="h-5 w-5" />
-        </NavItem>
-
-        <NavItem href="/dashboard" label="Products">
-          <Package className="h-5 w-5" />
+        <NavItem
+          href="/dashboard/testimonial-configs"
+          label="Testimonial Configs"
+        >
+          <FileCog className="h-5 w-5" />
         </NavItem>
 
         <NavItem href="/dashboard/customers" label="Customers">
           <Users2 className="h-5 w-5" />
-        </NavItem>
-
-        <NavItem href="/dashboard" label="Analytics">
-          <LineChart className="h-5 w-5" />
         </NavItem>
       </nav>
       <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">

@@ -21,15 +21,17 @@ import {
   FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { login } from './actions';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { login } from '../../services/auth';
 
 export const loginFormSchema = z.object({
   email: z.string().email(),
   password: z.string().min(1)
 });
+
+export type TLoginFormSchema = z.infer<typeof loginFormSchema>;
 
 export default function LoginPage() {
   const { toast } = useToast();

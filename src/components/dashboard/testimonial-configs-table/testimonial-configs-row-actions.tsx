@@ -15,7 +15,6 @@ interface ITestimonialConfigsRowActionsProps<TData> {
 export function TestimonialConfigsRowActions<TData>({
   row
 }: ITestimonialConfigsRowActionsProps<TData>) {
-  console.log(row);
   // const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   // const handleGenerateTestimonialConfigsLink = () => {

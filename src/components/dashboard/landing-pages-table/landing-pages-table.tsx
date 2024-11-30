@@ -2,7 +2,6 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
-import { getLandingPages } from '@/components/dashboard/landing-pages-table/actions';
 import { DataTable } from '@/components/data-tables/data-table';
 import { columns } from './columns';
 import { useState } from 'react';
@@ -15,8 +14,10 @@ import {
   CardDescription,
   CardContent
 } from '@/components/ui/card';
-import { getAccessToken } from '@/utils/auth';
+import { getAccessToken } from '@/services/auth';
 import { Skeleton } from '@/components/ui/skeleton';
+import { deleteLandinPages, getLandingPages } from '@/services/landing-page';
+import { AddLandingPageDialog } from './add-landing-page-dialog';
 
 export function LandingPagesTable() {
   const router = useRouter();
@@ -25,7 +26,7 @@ export function LandingPagesTable() {
   const [limit, setLimit] = useState(10);
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ['landingPages'],
+    queryKey: ['landing-pages'],
     queryFn: async () => {
       const access_token = await getAccessToken();
 
@@ -63,6 +64,17 @@ export function LandingPagesTable() {
     router.push(`/dashboard/landing-page/${row.id}`);
   };
 
+  const deleteMutation = async (id_list: Array<string>) => {
+    const access_token = await getAccessToken();
+
+    deleteLandinPages({
+      access_token: access_token || '',
+      deleteLandingPagesDto: {
+        landing_pages_id_list: id_list
+      }
+    });
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -80,7 +92,11 @@ export function LandingPagesTable() {
           total={data?.total || 0}
           rowOnClick={handleOpenLandingPage}
           columnName="name"
-        />
+          queryName="landing-pages"
+          deleteFn={deleteMutation}
+        >
+          <AddLandingPageDialog queryName="landing-pages" />
+        </DataTable>
       </CardContent>
     </Card>
   );
