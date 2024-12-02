@@ -22,10 +22,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { getAccessToken } from '@/services/auth';
-import {
-  TestimonialFormat,
-  TTestimonialConfig
-} from '../testimonial-configs-table/schemas';
+import { TestimonialFormat } from '../testimonial-configs-table/schemas';
 import {
   Select,
   SelectContent,
@@ -38,6 +35,7 @@ import { updateTestimonialConfig } from '@/services/testimonial-config';
 import { toast as sonner } from 'sonner';
 
 export const updateTestimonialConfigFormSchema = z.object({
+  name: z.string().optional(),
   expiration_limit: z.coerce.number().optional(),
   title_char_limit: z.coerce.number().optional(),
   message_char_limit: z.coerce.number().optional(),
@@ -45,19 +43,33 @@ export const updateTestimonialConfigFormSchema = z.object({
 });
 
 interface IUpdateTestimonialConfigDialogProps {
-  testimonial_config: TTestimonialConfig;
+  id: string;
+  name: string;
+  expiration_limit: number;
+  title_char_limit: number;
+  message_char_limit: number;
+  format: TestimonialFormat;
+  isOpen?: boolean;
+  onClose?: () => void;
 }
 
 export function UpdateTestimonialConfigDialog({
-  testimonial_config
+  id,
+  name,
+  expiration_limit,
+  title_char_limit,
+  message_char_limit,
+  format,
+  isOpen,
+  onClose
 }: IUpdateTestimonialConfigDialogProps) {
   const form = useForm<z.infer<typeof updateTestimonialConfigFormSchema>>({
     resolver: zodResolver(updateTestimonialConfigFormSchema),
     defaultValues: {
-      expiration_limit: testimonial_config.expiration_limit,
-      title_char_limit: testimonial_config.title_char_limit,
-      message_char_limit: testimonial_config.message_char_limit,
-      format: testimonial_config.format
+      expiration_limit: expiration_limit,
+      title_char_limit: title_char_limit,
+      message_char_limit: message_char_limit,
+      format: format
     }
   });
 
@@ -75,7 +87,7 @@ export function UpdateTestimonialConfigDialog({
 
     updateTestimonialConfig({
       access_token: access_token || '',
-      testimonial_config_id: testimonial_config.id,
+      testimonial_config_id: id,
       updateTestimonialConfigDto: data
     });
 
@@ -85,10 +97,15 @@ export function UpdateTestimonialConfigDialog({
   };
 
   return (
-    <Dialog>
-      <DialogTrigger>
-        <Pencil />
-      </DialogTrigger>
+    <Dialog
+      {...(isOpen !== undefined && { open: isOpen })}
+      {...(onClose && { onOpenChange: onClose })}
+    >
+      {!(isOpen !== undefined) && (
+        <DialogTrigger>
+          <Pencil />
+        </DialogTrigger>
+      )}
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Edit Testimonial Config</DialogTitle>
@@ -104,6 +121,23 @@ export function UpdateTestimonialConfigDialog({
           >
             <FormField
               control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder={name.toString()}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="expiration_limit"
               render={({ field }) => (
                 <FormItem>
@@ -111,7 +145,7 @@ export function UpdateTestimonialConfigDialog({
                   <FormControl>
                     <Input
                       type="number"
-                      placeholder={testimonial_config.expiration_limit.toString()}
+                      placeholder={expiration_limit.toString()}
                       {...field}
                     />
                   </FormControl>
@@ -128,7 +162,7 @@ export function UpdateTestimonialConfigDialog({
                   <FormControl>
                     <Input
                       type="number"
-                      placeholder={testimonial_config.title_char_limit.toString()}
+                      placeholder={title_char_limit.toString()}
                       {...field}
                     />
                   </FormControl>
@@ -145,7 +179,7 @@ export function UpdateTestimonialConfigDialog({
                   <FormControl>
                     <Input
                       type="number"
-                      placeholder={testimonial_config.message_char_limit.toString()}
+                      placeholder={message_char_limit.toString()}
                       {...field}
                     />
                   </FormControl>
@@ -159,16 +193,12 @@ export function UpdateTestimonialConfigDialog({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Password</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={testimonial_config.format}
-                  >
+                  <Select onValueChange={field.onChange} defaultValue={format}>
                     <FormControl>
                       <SelectTrigger className="w-[180px]">
                         <SelectValue
                           placeholder={
-                            testimonial_config.format.charAt(0) +
-                            testimonial_config.format.slice(1).toLowerCase()
+                            format.charAt(0) + format.slice(1).toLowerCase()
                           }
                         />
                       </SelectTrigger>

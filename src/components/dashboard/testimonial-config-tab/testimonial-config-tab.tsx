@@ -27,7 +27,12 @@ export async function TestimonialConfigTab({
           </CardDescription>
         </div>
         <UpdateTestimonialConfigDialog
-          testimonial_config={testimonial_config}
+          expiration_limit={testimonial_config.expiration_limit}
+          message_char_limit={testimonial_config.message_char_limit}
+          title_char_limit={testimonial_config.title_char_limit}
+          format={testimonial_config.format}
+          id={testimonial_config.id}
+          name={testimonial_config.name}
         />
       </CardHeader>
       <CardContent className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">

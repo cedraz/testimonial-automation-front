@@ -1,13 +1,31 @@
 'use client';
 
 import { Row } from '@tanstack/react-table';
-import { MoreHorizontal } from 'lucide-react';
+import { MoreHorizontal, Pencil, Trash } from 'lucide-react';
 import { Button } from '../../ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuTrigger
-} from '../../ui/dropdown-menu';
+} from '@/components/ui/dropdown-menu';
+import { useState } from 'react';
+import { UpdateTestimonialConfigDialog } from '../testimonial-config-tab/update-testimonial-config-dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle
+} from '@/components/ui/alert-dialog';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { getAccessToken } from '@/services/auth';
+import { toast as sonner } from 'sonner';
+import { deleteTestimonialConfig } from '@/services/testimonial-config';
+
 interface ITestimonialConfigsRowActionsProps<TData> {
   row: Row<TData>;
 }
@@ -15,70 +33,33 @@ interface ITestimonialConfigsRowActionsProps<TData> {
 export function TestimonialConfigsRowActions<TData>({
   row
 }: ITestimonialConfigsRowActionsProps<TData>) {
-  // const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isWarningDialogOpen, setIsWarningDialogOpen] = useState(false);
 
-  // const handleGenerateTestimonialConfigsLink = () => {
-  //   const domain = window.location.origin;
-  //   navigator.clipboard.writeText(
-  //     `${domain}/testimonial/${row.getValue('id')}`
-  //   );
-  //   sooner('Link copied to clipboard', {
-  //     description:
-  //       'Share this link with your customer to collect their testimonial.',
-  //     action: {
-  //       label: 'Undo',
-  //       onClick: () => {}
-  //     }
-  //   });
-  // };
+  const queryClient = useQueryClient();
 
-  // const deleteTestimonialMutation = useMutation({
-  //   mutationFn: async () => {
-  //     const testimonial_id: string = row.getValue('id');
-  //     const access_token = await getAccessToken();
-  //     await deleteTestimonial({
-  //       testimonial_id,
-  //       access_token: access_token || ''
-  //     });
-  //   },
-  //   onSuccess: () => {
-  //     queryClient.invalidateQueries({ queryKey: ['testimonials'] });
-  //     sooner('Success', {
-  //       description: 'Testimonial deleted successfully.'
-  //     });
-  //   },
-  //   onError: () => {
-  //     sooner('Error', {
-  //       description: 'Failed to delete testimonial.'
-  //     });
-  //   }
-  // });
+  const deleteTestimonialConfigMutation = useMutation({
+    mutationFn: async () => {
+      const testimonial_config_id: string = row.getValue('id');
+      const access_token = await getAccessToken();
 
-  // const handleUpdateStatus = useMutation({
-  //   mutationFn: async (status: TestimonialStatus) => {
-  //     const testimonial_id: string = row.getValue('id');
-  //     const access_token = await getAccessToken();
-
-  //     const updateTestimonialFormData = formDataBuilder({ status });
-
-  //     await updateTestimonial({
-  //       testimonial_id,
-  //       access_token: access_token || '',
-  //       updateTestimonialFormData
-  //     });
-  //   },
-  //   onSuccess: () => {
-  //     queryClient.invalidateQueries({ queryKey: ['testimonials'] });
-  //     sooner('Success', {
-  //       description: 'Testimonial status updated successfully.'
-  //     });
-  //   },
-  //   onError: () => {
-  //     sooner('Error', {
-  //       description: 'Failed to update testimonial status.'
-  //     });
-  //   }
-  // });
+      await deleteTestimonialConfig({
+        access_token: access_token || '',
+        testimonial_configs_id_list: [testimonial_config_id]
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['testimonials-configs'] });
+      sonner('Success', {
+        description: 'Testimonial Config deleted successfully.'
+      });
+    },
+    onError: () => {
+      sonner('Error', {
+        description: 'Failed to delete testimonial config.'
+      });
+    }
+  });
 
   return (
     <>
@@ -93,14 +74,54 @@ export function TestimonialConfigsRowActions<TData>({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-[160px]">
-          teste
+          <DropdownMenuItem
+            className="flex gap-2 cursor-pointer"
+            onClick={() => setIsDialogOpen(true)}
+          >
+            <Pencil size={14} /> Edit
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => setIsWarningDialogOpen(true)}
+            className="flex justify-between cursor-pointer"
+          >
+            Delete <Trash size={14} />
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      {/* <UpdateTestimonialDialog
+      <UpdateTestimonialConfigDialog
+        expiration_limit={row.getValue('expiration_limit')}
+        id={row.getValue('id')}
+        title_char_limit={row.getValue('title_char_limit')}
+        name={row.getValue('name')}
+        message_char_limit={row.getValue('message_char_limit')}
+        format={row.getValue('format')}
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
-        testimonial_id={row.getValue('id')}
-      /> */}
+      />
+      <AlertDialog
+        open={isWarningDialogOpen}
+        onOpenChange={() => setIsWarningDialogOpen(false)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete your
+              testimonial config and all the landind pages that use this
+              specific testimonial config.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => deleteTestimonialConfigMutation.mutate()}
+              className="bg-red-500 hover:bg-red-700 flex gap-2"
+            >
+              Delete <Trash size={15} />
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }

@@ -33,6 +33,13 @@ export function DashboardBreadcrumb() {
             <BreadcrumbSeparator />
           </>
         )}
+        {pathname === '/dashboard/profile' && (
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link href="/dashboard/profile">Profile</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+        )}
         {pathname.startsWith('/dashboard/landing-page/') && (
           <BreadcrumbItem>
             <BreadcrumbPage>Testimonials</BreadcrumbPage>

@@ -3,6 +3,7 @@
 import { TLandingPage } from '@/components/dashboard/landing-pages-table/schema';
 import { refresh } from '@/services/auth';
 import { IPaginationResponse } from '@/utils/types';
+import { api } from './requester';
 
 const origin_url = process.env.ORIGIN_URL;
 const api_url = process.env.API_URL;
@@ -78,19 +79,14 @@ export async function addLandingPage({
   access_token: string;
   addLandingPageDto: TAddLandingPageDto;
 }) {
-  const response = await fetch(`${api_url}/landing-page`, {
+  const data = await api({
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Forwarded-Host': origin_url ? origin_url : 'http://localhost:3000',
-      Authorization: `Bearer ${access_token}`
-    },
-    body: JSON.stringify(addLandingPageDto)
+    url: `/landing-page`,
+    body: JSON.stringify(addLandingPageDto),
+    token: access_token
   });
 
-  const data: TLandingPage = await response.json();
-
-  return data;
+  return data as TLandingPage;
 }
 
 type TDeleteLandingPagesDto = {

@@ -36,6 +36,7 @@ import { getAccessToken } from '@/services/auth';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { addLandingPage } from '@/services/landing-page';
 import { toast as sonner } from 'sonner';
+import { useToast } from '@/hooks/use-toast';
 
 export interface IAddTestimonialDialogProps {
   queryName: string;
@@ -53,6 +54,7 @@ export function AddLandingPageDialog({
   const [testimonialConfigs, setTestimonialConfigs] = useState<
     TTestimonialConfig[]
   >([]);
+  const { toast } = useToast();
 
   const handleGetTestimonialConfigs = async () => {
     const access_token = await getAccessToken();
@@ -84,7 +86,14 @@ export function AddLandingPageDialog({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [queryName] });
       sonner('Success', {
-        description: 'Testimonial Config created successfully'
+        description: 'Testimonial Config created successfully.'
+      });
+    },
+    onError: (e) => {
+      toast({
+        variant: 'destructive',
+        title: 'Uh oh! Something went wrong.',
+        description: e.message.toString()
       });
     }
   });

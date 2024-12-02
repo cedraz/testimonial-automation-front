@@ -109,68 +109,24 @@ export async function addTestimonialConfig({
   return data;
 }
 
-// export async function addTestimonial({
-//   access_token,
-//   landing_page_id
-// }: {
-//   access_token: string;
-//   landing_page_id: string;
-// }) {
-//   const response = await fetch(`${api_url}/testimonial`, {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json',
-//       'X-Forwarded-Host': origin_url ? origin_url : 'http://localhost:3000',
-//       Authorization: `Bearer ${access_token}`
-//     },
-//     body: JSON.stringify({ landing_page_id })
-//   });
+export async function deleteTestimonialConfig({
+  access_token,
+  testimonial_configs_id_list
+}: {
+  access_token: string;
+  testimonial_configs_id_list: Array<string>;
+}) {
+  const response = await fetch(`${api_url}/testimonial-config`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Forwarded-Host': origin_url ? origin_url : 'http://localhost:3000',
+      Authorization: `Bearer ${access_token}`
+    },
+    body: JSON.stringify({ testimonial_configs_id_list })
+  });
 
-//   const data: TTestimonial = await response.json();
+  const data = await response.json();
 
-//   return data;
-// }
-
-// export async function deleteTestimonial({
-//   access_token,
-//   testimonial_id
-// }: {
-//   access_token: string;
-//   testimonial_id: string;
-// }) {
-//   const response = await fetch(`${api_url}/testimonial/${testimonial_id}`, {
-//     method: 'DELETE',
-//     headers: {
-//       'Content-Type': 'application/json',
-//       'X-Forwarded-Host': origin_url ? origin_url : 'http://localhost:3000',
-//       Authorization: `Bearer ${access_token}`
-//     }
-//   });
-
-//   const data: TTestimonial = await response.json();
-
-//   return data;
-// }
-
-// export async function updateTestimonial({
-//   testimonial_id,
-//   updateTestimonialFormData,
-//   access_token
-// }: {
-//   testimonial_id: string;
-//   updateTestimonialFormData: FormData;
-//   access_token: string;
-// }) {
-//   const response = await fetch(`${api_url}/testimonial/${testimonial_id}`, {
-//     method: 'PUT',
-//     headers: {
-//       'X-Forwarded-Host': origin_url ? origin_url : 'http://localhost:3000',
-//       Authorization: `Bearer ${access_token}`
-//     },
-//     body: updateTestimonialFormData
-//   });
-
-//   const data: TTestimonial = await response.json();
-
-//   return data;
-// }
+  return data;
+}
