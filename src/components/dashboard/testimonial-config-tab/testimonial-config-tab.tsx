@@ -17,6 +17,8 @@ export type TTestimonialConfigProps = {
 export async function TestimonialConfigTab({
   testimonial_config
 }: TTestimonialConfigProps) {
+  console.log(testimonial_config);
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">

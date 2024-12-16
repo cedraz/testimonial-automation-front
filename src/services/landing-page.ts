@@ -79,14 +79,14 @@ export async function addLandingPage({
   access_token: string;
   addLandingPageDto: TAddLandingPageDto;
 }) {
-  const data = await api({
+  const data = await api<TLandingPage>({
     method: 'POST',
-    url: `/landing-page`,
+    path: `/landing-page`,
     body: JSON.stringify(addLandingPageDto),
     token: access_token
   });
 
-  return data as TLandingPage;
+  return data;
 }
 
 type TDeleteLandingPagesDto = {

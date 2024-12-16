@@ -3,6 +3,8 @@
 import { cookies } from 'next/headers';
 import { TLoginFormSchema } from '../app/login/page';
 import { TRegisterFormSchema } from '@/components/register/register-form';
+import { api } from './requester';
+import { TAdmin } from './types';
 
 export type Auth = {
   access_token: string;
@@ -60,22 +62,13 @@ export async function login(loginFormData: TLoginFormSchema) {
 }
 
 export async function register(formData: TRegisterFormSchema) {
-  const response = await fetch(`${api_url}/register`, {
+  const response = await api<TAdmin>({
+    path: '/admin',
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Forwarded-Host': origin_url ? origin_url : 'localhost:3000'
-    },
     body: JSON.stringify(formData)
   });
 
-  if (!response.ok) {
-    return false;
-  }
-
-  const data = await response.json();
-
-  return data;
+  return response;
 }
 
 export async function auth(): Promise<Auth | false> {
@@ -160,4 +153,47 @@ export async function logout() {
 
   cookieStore.delete('access_token');
   cookieStore.delete('refresh_token');
+}
+
+type TSetCookiesFromExternalProviderDto = {
+  access_token: string;
+  refresh_token: string;
+};
+
+export async function setCookiesFromExternalProvider({
+  access_token,
+  refresh_token
+}: TSetCookiesFromExternalProviderDto) {
+  const accessTokenExpires = new Date();
+  accessTokenExpires.setTime(accessTokenExpires.getTime() + 2 * 60 * 60 * 1000);
+
+  const refreshTokenExpires = new Date();
+  refreshTokenExpires.setTime(
+    refreshTokenExpires.getTime() + 7 * 24 * 60 * 60 * 1000
+  );
+
+  const cookieStore = cookies();
+
+  cookieStore.set({
+    name: 'access_token',
+    value: access_token,
+    path: '/',
+    httpOnly: true,
+    secure: true,
+    expires: accessTokenExpires
+  });
+
+  cookieStore.set({
+    name: 'refresh_token',
+    value: refresh_token,
+    path: '/',
+    httpOnly: true,
+    secure: true,
+    expires: refreshTokenExpires
+  });
+
+  return {
+    access_token: cookieStore.get('access_token'),
+    refresh_token: cookieStore.get('refresh_token')
+  };
 }

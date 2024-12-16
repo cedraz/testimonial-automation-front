@@ -78,10 +78,12 @@ export function AddLandingPageDialog({
     mutationFn: async (data: z.infer<typeof addLandingPageFormSchema>) => {
       const access_token = await getAccessToken();
 
-      await addLandingPage({
+      const { error } = await addLandingPage({
         access_token: access_token || '',
         addLandingPageDto: data
       });
+
+      if (error) throw new Error(error.toString());
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [queryName] });

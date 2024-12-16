@@ -24,7 +24,7 @@ export function TestimonialsTable({
 }) {
   const { toast } = useToast();
   const [init, setInit] = useState(0);
-  const [limit, setLimit] = useState(10);
+  const [limit, setLimit] = useState(7);
 
   const { data, error, isLoading } = useQuery({
     queryKey: ['testimonials'],

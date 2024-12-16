@@ -123,7 +123,7 @@ export function DataTable<TData, TValue>({
           />
         )}
       </DataTableToolbar>
-      <div className="rounded-md border min-h-[700px]">
+      <div className="rounded-md border min-h-[400px]">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

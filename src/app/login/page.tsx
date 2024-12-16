@@ -8,7 +8,6 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -25,6 +24,8 @@ import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { login } from '../../services/auth';
+import { FcGoogle } from 'react-icons/fc';
+import TextSeparator from '@/components/ui/text-separator';
 
 export const loginFormSchema = z.object({
   email: z.string().email(),
@@ -58,6 +59,10 @@ export default function LoginPage() {
 
     router.push('/dashboard');
   };
+
+  const googleSignInUrl = process.env.API_URL
+    ? `${process.env.API_URL}/auth/google/signin`
+    : 'http://localhost:3333/auth/google/signin';
 
   return (
     <div className="relative h-screen flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
@@ -93,10 +98,10 @@ export default function LoginPage() {
         <div className="mx-auto flex w-full flex-col justify-center items-center space-y-6 sm:w-[350px]">
           <div className="flex flex-col space-y-2 text-center">
             <h1 className="text-2xl font-semibold tracking-tight">
-              Create an account
+              Log in into your account
             </h1>
             <p className="text-sm text-muted-foreground">
-              Enter your email below to create your account
+              Enter your email and password below to sign in into your account
             </p>
           </div>
           <Card className="w-full max-w-sm">
@@ -115,7 +120,7 @@ export default function LoginPage() {
                         <FormItem>
                           <FormLabel>Email</FormLabel>
                           <FormControl>
-                            <Input placeholder="shadcn" {...field} />
+                            <Input placeholder="email@example.com" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -128,29 +133,34 @@ export default function LoginPage() {
                         <FormItem className="">
                           <FormLabel>Password</FormLabel>
                           <FormControl>
-                            <Input placeholder="shadcn" {...field} />
+                            <Input placeholder="pass@123" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                    <Button type="submit">Submit</Button>
+                    <Button type="submit">Sign in</Button>
                   </form>
                 </Form>
               </CardContent>
             </CardHeader>
-            <Separator className="" />
+            <TextSeparator text="Or continue with" />
             <CardFooter className="p-6">
-              <Button>Google</Button>
+              <Button className="gap-1 w-full" asChild>
+                <a href={googleSignInUrl}>
+                  <FcGoogle className="w-[16px] h-[16px]" />
+                  Continue with Google
+                </a>
+              </Button>
             </CardFooter>
           </Card>
           <div className="flex gap-1">
-            <p className="text-center text-sm">Already have and account?</p>
+            <p className="text-center text-sm">Don&apos;t have an account?</p>
             <Link
               className="text-center hover:underline text-sm font-bold"
-              href="/login"
+              href="/register"
             >
-              Login
+              Register
             </Link>
           </div>
           <p className="px-8 text-center text-sm text-muted-foreground">

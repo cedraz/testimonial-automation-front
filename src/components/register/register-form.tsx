@@ -25,11 +25,13 @@ import { FcGoogle } from 'react-icons/fc';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { register } from '@/services/auth';
+import { PasswordInput } from '../ui/password-input';
 
 export const registerFormSchema = z.object({
   name: z.string().min(1),
   email: z.string().email(),
   password: z.string().min(1),
+  confirm_password: z.string().min(1),
   company_name: z.string().min(1)
 });
 
@@ -45,14 +47,26 @@ export default function RegisterForm() {
       email: '',
       password: '',
       name: '',
-      company_name: ''
+      company_name: '',
+      confirm_password: ''
     }
   });
 
   const handleSubmit = async (values: z.infer<typeof registerFormSchema>) => {
-    const response = await register(values);
+    if (values.password !== values.confirm_password) {
+      toast({
+        title: 'Error',
+        variant: 'destructive',
+        description: 'Password must be equal to confirm password',
+        duration: 3000
+      });
 
-    if (!response) {
+      return;
+    }
+
+    const { error } = await register(values);
+
+    if (error) {
       toast({
         title: 'Error',
         variant: 'destructive',
@@ -65,11 +79,11 @@ export default function RegisterForm() {
     toast({
       title: 'Success',
       variant: 'default',
-      description: 'Account created successfully.',
+      description: 'Verify email code send to email',
       duration: 5000
     });
 
-    router.push('/login');
+    router.push(`/register/verify-email/${values.email}`);
   };
 
   return (
@@ -84,12 +98,38 @@ export default function RegisterForm() {
             >
               <FormField
                 control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="John Doe" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
                 name="email"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="type your email..." {...field} />
+                      <Input placeholder="john@email.com" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="company_name"
+                render={({ field }) => (
+                  <FormItem className="">
+                    <FormLabel>Company Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="john's company" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -102,7 +142,20 @@ export default function RegisterForm() {
                   <FormItem className="">
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input placeholder="type your password..." {...field} />
+                      <PasswordInput placeholder="john@123" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="confirm_password"
+                render={({ field }) => (
+                  <FormItem className="">
+                    <FormLabel>Confirm Password</FormLabel>
+                    <FormControl>
+                      <PasswordInput placeholder="john@123" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
