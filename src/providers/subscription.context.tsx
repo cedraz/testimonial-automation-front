@@ -24,9 +24,14 @@ export function SubscriptionProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [adminId, setAdminId] = useState<string>('');
-  const [stripeCustomerId, setStripeCustomerId] = useState<string>('');
-  const [stripeSubscriptionId, setStripeSubscriptionId] = useState<string>('');
+  const [adminId, setAdminId] = useState<string>(
+    '8e3529cd-b496-4811-880c-7735c3585d43'
+  );
+  const [stripeCustomerId, setStripeCustomerId] =
+    useState<string>('cus_RPHSA0iK6CUrmG');
+  const [stripeSubscriptionId, setStripeSubscriptionId] = useState<string>(
+    'sub_1QWpf3GVcUD1lSnnJHlMbdhK'
+  );
 
   return (
     <SubscriptionContext.Provider

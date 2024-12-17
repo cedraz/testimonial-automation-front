@@ -38,3 +38,9 @@ export type TVerificationRequest = {
   created_at: Date;
   updated_at: Date;
 };
+
+export type TStripeSubscriptionPlan = {
+  plan: string;
+  daysRemaining: number;
+  endDate: string;
+};

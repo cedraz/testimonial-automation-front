@@ -1,3 +1,5 @@
+'use server';
+
 import { getAccessToken } from './auth';
 import { api } from './requester';
 import { TAdmin, TVerificationRequest } from './types';

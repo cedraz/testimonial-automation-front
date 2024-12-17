@@ -70,7 +70,7 @@ export default function RegisterForm() {
       toast({
         title: 'Error',
         variant: 'destructive',
-        description: 'An error occurred while creating the account.',
+        description: error,
         duration: 5000
       });
       return;
