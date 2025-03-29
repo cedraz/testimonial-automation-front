@@ -47,12 +47,12 @@ export default function LoginPage() {
   });
 
   const handleSubmit = async (values: z.infer<typeof loginFormSchema>) => {
-    const loginResponse = await login(values);
+    const { error } = await login(values);
 
-    if (!loginResponse) {
+    if (error) {
       toast({
-        title: 'Credenciais inválidas',
-        description: 'Por favor, tente novamente.',
+        title: 'Error',
+        description: error,
         variant: 'destructive'
       });
     }

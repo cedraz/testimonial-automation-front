@@ -9,11 +9,7 @@ import {
 } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { useSubscription } from '@/providers/subscription.context';
-import {
-  cancelSubscription,
-  getAdminsCurrentPlan,
-  upgradeSubscription
-} from '@/services/stripe';
+import { getAdminsCurrentPlan, upgradeSubscription } from '@/services/stripe';
 import { TStripeSubscriptionPlan } from '@/services/types';
 import { formatDate } from '@/utils/date-utils';
 import { timeLeftTo } from '@/utils/time-left';
@@ -31,14 +27,23 @@ export default function Subscription() {
 
   const { toast } = useToast();
 
-  const { stripeCustomerId, stripeSubscriptionId, setStripeSubscriptionId } =
-    useSubscription();
+  const { stripeCustomerId, stripeSubscriptionId } = useSubscription();
+
+  if (!stripeCustomerId || !stripeSubscriptionId) {
+    router.push('/login');
+  }
 
   const handleGetAdminsCurrentPlan = useCallback(async () => {
     const { error, data } = await getAdminsCurrentPlan(adminId);
 
     if (error) {
-      console.log(error);
+      toast({
+        title: 'Error',
+        variant: 'destructive',
+        description: error,
+        duration: 3000
+      });
+
       return;
     }
 
@@ -49,7 +54,7 @@ export default function Subscription() {
         plan: data?.plan
       });
     }
-  }, [adminId]);
+  }, [adminId, toast]);
 
   useEffect(() => {
     handleGetAdminsCurrentPlan();
@@ -71,18 +76,18 @@ export default function Subscription() {
     }
   };
 
-  const handleCancelSubscription = async () => {
-    const { error, data } = await cancelSubscription();
+  // const handleCancelSubscription = async () => {
+  //   const { error, data } = await cancelSubscription();
 
-    if (error) {
-      console.error(error);
-      return;
-    }
+  //   if (error) {
+  //     console.error(error);
+  //     return;
+  //   }
 
-    if (data) {
-      setStripeSubscriptionId(data.newSubscriptionId);
-    }
-  };
+  //   if (data) {
+  //     setStripeSubscriptionId(data.newSubscriptionId);
+  //   }
+  // };
 
   return (
     <section className="w-full h-screen  justify-center items-center flex flex-col">
@@ -92,6 +97,7 @@ export default function Subscription() {
           <CardHeader>Free</CardHeader>
           <CardContent>
             <div className="flex flex-col gap-3">
+              {subscription.plan === 'FREE' && <span>Your current plan</span>}
               <span>R$ 0,00 / month</span>
               <span>Ends in: {formatDate(subscription.endDate)}</span>
               <span>Days left: {timeLeftTo(subscription.endDate)}</span>
@@ -106,9 +112,16 @@ export default function Subscription() {
           <CardContent>R$ 4,99 / month</CardContent>
           <CardFooter>
             <Button onClick={handleGetUpgradePlanLink}>Get started</Button>
-            <Button onClick={handleCancelSubscription}>cancel</Button>
           </CardFooter>
         </Card>
+        <Button
+          variant="outline"
+          onClick={() => {
+            router.push('/login');
+          }}
+        >
+          I don&apos;t want to upgrade now
+        </Button>
       </div>
     </section>
   );

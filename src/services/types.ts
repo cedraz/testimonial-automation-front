@@ -44,3 +44,13 @@ export type TStripeSubscriptionPlan = {
   daysRemaining: number;
   endDate: string;
 };
+
+export type TApiKey = {
+  apikey: {
+    id: string;
+    key: string;
+    created_at: Date;
+    updated_at: Date;
+    admin_id: string;
+  };
+};
